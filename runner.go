@@ -32,6 +32,13 @@ import (
 //	if err = r.Close(); err != nil {
 //		os.Stderr.Write([]byte(fmt.Sprintf("Error closing tmux runner: %s", err.Error())))
 //	}
+//
+// To run a command and collect its output, use the Run method:
+//
+//	output, err = r.Run("list-sessions -F '#{session_name}'")
+//
+// The Runner type also has many other functions for tasks like starting a new
+// tmux session, getting the active window, etc.
 type Runner struct {
 	writePipe   io.WriteCloser
 	readPipe    io.ReadCloser
