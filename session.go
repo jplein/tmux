@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+// Get the name of the active session. Returns an error if there is no active
+// session.
 func GetActiveSession() (string, error) {
 	var activeSession []byte
 	var err error
@@ -18,11 +20,13 @@ func GetActiveSession() (string, error) {
 	return s, nil
 }
 
+// Attach to the session with the provided name
 func (r *Runner) AttachSession(sessionName string) error {
 	_, err := r.Run(fmt.Sprintf("attach -t %s", sessionName))
 	return err
 }
 
+// Returns a list of the running sessions
 func (r *Runner) ListSessions() ([]string, error) {
 	result, err := r.Run("list-sessions -F '#{session_name}'")
 	if err != nil {
@@ -34,6 +38,7 @@ func (r *Runner) ListSessions() ([]string, error) {
 
 }
 
+// Start a new session
 func (r *Runner) StartSession(name string) error {
 	sessions, err := r.ListSessions()
 	if err != nil {

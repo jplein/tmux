@@ -1,3 +1,9 @@
+// Package tmux implements methods for working with tmux.
+//
+// To execute a tmux shell command, see [Command].
+//
+// For better performance, use a [Runner], which starts a command session using
+// "tmux -C", which it then reads and writes to.
 package tmux
 
 import (
@@ -9,6 +15,23 @@ import (
 	"strings"
 )
 
+// A Runner can be used to run tmux commands and read their output, with better
+// performance than [Command]. A Runner starts a "tmux -C" process, and writes
+// to it to send commands, then reads their output.
+//
+// To initialize, use something like this:
+//
+//	var r *tmux.Runner = &tmux.Runner{}
+//
+//	if err = r.Init(); err != nil {
+//		return err
+//	}
+//
+// When you're done with the Runner, close it, to stop the "tmux -C" process:
+//
+//	if err = r.Close(); err != nil {
+//		os.Stderr.Write([]byte(fmt.Sprintf("Error closing tmux runner: %s", err.Error())))
+//	}
 type Runner struct {
 	writePipe   io.WriteCloser
 	readPipe    io.ReadCloser
@@ -155,6 +178,9 @@ func (r *Runner) getSessionNames() ([]string, error) {
 	return sessionNames, nil
 }
 
+// Run this before attempting to use the Runner. This starts a "tmux -C" process
+// and a tmux session which it uses to run commands; make sure to call Close()
+// to dispose of these resources
 func (r *Runner) Init() error {
 	var err error
 
@@ -238,6 +264,8 @@ func (r *Runner) Run(cmd string) (string, error) {
 	return output, nil
 }
 
+// Close the test runner. Kills the "tmux -C" session, and closes the temporary
+// tmux session created by Init().
 func (r *Runner) Close() error {
 	defer func() {
 		e := r.tmuxCommand.Process.Kill()

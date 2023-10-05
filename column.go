@@ -10,26 +10,25 @@ import (
 // of these functions is one or more panes stacked on top of each other. For
 // example in a layout like this:
 //
-//   +---+---+---+
-//   | 0 |   |   |
-//   +---+ 2 | 3 |
-//   | 1 |   |   |
-//   +---+---+---+
+//	+---+---+---+
+//	| 0 |   |   |
+//	+---+ 2 | 3 |
+//	| 1 |   |   |
+//	+---+---+---+
 //
 // the first column is panes 0 and 1, the second is pane 2, and the third is
 // pane 3.
 //
 // There are edge cases, like this:
 //
-//   +---+---+---+
-//   | 0 | 1 |   |
-//   +---+---+ 3 |
-//   |   2   |   |
-//   +-------+---+
+//	+---+---+---+
+//	| 0 | 1 |   |
+//	+---+---+ 3 |
+//	|   2   |   |
+//	+-------+---+
 //
 // Is this two columns, or three? These methods count it as 3: each pane at the
 // top of the window is the top of a column.
-
 type Column struct {
 	// The pane ID of the pane at the top of this column
 	Pane string
@@ -38,6 +37,8 @@ type Column struct {
 	Width int
 }
 
+// Returns a list of columns in the active window. See [Column] for details on
+// what a column is.
 func (r *Runner) ListColumns() ([]Column, error) {
 	var err error
 
@@ -60,7 +61,7 @@ func (r *Runner) ListColumns() ([]Column, error) {
 
 		var width int
 		if width, err = strconv.Atoi(tokens[1]); err != nil {
-			return nil, fmt.Errorf("Error parsing second element of line '%s': '%s'", line, err.Error())
+			return nil, fmt.Errorf("error parsing second element of line '%s': '%s'", line, err.Error())
 		}
 
 		columns = append(columns, Column{Pane: pane, Width: width})

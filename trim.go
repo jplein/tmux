@@ -1,5 +1,7 @@
 package tmux
 
+// Given a string, returns a copy of the string with a trailing newline, if any,
+// removed
 func Trim(s string) string {
 	switch {
 	case len(s) == 0:
