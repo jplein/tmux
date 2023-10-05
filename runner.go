@@ -245,6 +245,8 @@ func (r *Runner) Init() error {
 	return nil
 }
 
+// Run a tmux command and return its output. The output will generally have a
+// trailing newline; if this is undesirable, use [Trim].
 func (r *Runner) Run(cmd string) (string, error) {
 	cmdBuf := []byte(fmt.Sprintf("%s\n", cmd))
 	bytesWritten, err := r.writePipe.Write(cmdBuf)

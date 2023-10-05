@@ -26,7 +26,7 @@ func (r *Runner) AttachSession(sessionName string) error {
 	return err
 }
 
-// Returns a list of the running sessions
+// Returns a list of the names of the running sessions
 func (r *Runner) ListSessions() ([]string, error) {
 	result, err := r.Run("list-sessions -F '#{session_name}'")
 	if err != nil {
