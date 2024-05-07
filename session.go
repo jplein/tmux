@@ -22,7 +22,7 @@ func GetActiveSession() (string, error) {
 
 // Attach to the session with the provided name
 func (r *Runner) AttachSession(sessionName string) error {
-	_, err := r.Run(fmt.Sprintf("attach -t %s", sessionName))
+	_, err := r.Run(fmt.Sprintf("attach -t '%s'", sessionName))
 	return err
 }
 
