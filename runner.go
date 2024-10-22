@@ -45,6 +45,7 @@ type Runner struct {
 	readScanner bufio.Scanner
 	tmpSession  string
 	tmuxCommand *exec.Cmd
+	config      Config
 }
 
 func (r *Runner) readNextLine() (string, error) {
@@ -163,7 +164,7 @@ func (r *Runner) getSessionNamesByCommand() ([]string, error) {
 	var err error
 
 	var output []byte
-	if output, err = Command("list-sessions", "-F", "#{session_name}"); err != nil {
+	if output, err = Command(r.config, "list-sessions", "-F", "#{session_name}"); err != nil {
 		return nil, err
 	}
 
@@ -185,11 +186,17 @@ func (r *Runner) getSessionNames() ([]string, error) {
 	return sessionNames, nil
 }
 
+type Config struct {
+	Socket string
+}
+
 // Run this before attempting to use the Runner. This starts a "tmux -C" process
 // and a tmux session which it uses to run commands; make sure to call Close()
 // to dispose of these resources
-func (r *Runner) Init() error {
+func (r *Runner) Init(c Config) error {
 	var err error
+
+	r.config = c
 
 	var tmuxPath string
 	if tmuxPath, err = Tmux(); err != nil {
@@ -201,7 +208,11 @@ func (r *Runner) Init() error {
 		return err
 	}
 
-	r.tmuxCommand = exec.Command(tmuxPath, "-C")
+	if c.Socket != "" {
+		r.tmuxCommand = exec.Command(tmuxPath, "-L", c.Socket, "-C")
+	} else {
+		r.tmuxCommand = exec.Command(tmuxPath, "-C")
+	}
 
 	writePipe, err := r.tmuxCommand.StdinPipe()
 	if err != nil {
