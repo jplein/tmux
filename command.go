@@ -3,7 +3,7 @@ package tmux
 import "os/exec"
 
 // Run a tmux shell command with the provided arguments, and return its output.
-func Command(args ...string) ([]byte, error) {
+func Command(c Config, args ...string) ([]byte, error) {
 	var tmuxPath string
 	var err error
 
@@ -11,5 +11,8 @@ func Command(args ...string) ([]byte, error) {
 		return []byte(""), err
 	}
 
+	if c.Socket != "" {
+		args = append([]string{"-L", c.Socket}, args...)
+	}
 	return exec.Command(tmuxPath, args...).Output()
 }

@@ -7,11 +7,11 @@ import (
 
 // Get the name of the active session. Returns an error if there is no active
 // session.
-func GetActiveSession() (string, error) {
+func GetActiveSession(c Config) (string, error) {
 	var activeSession []byte
 	var err error
 
-	if activeSession, err = Command("display-message", "-p", "-F", "#{session_name}"); err != nil {
+	if activeSession, err = Command(c, "display-message", "-p", "-F", "#{session_name}"); err != nil {
 		fmt.Printf("err after calling display-message: '%s'\n", err)
 		return "", err
 	}
