@@ -11,5 +11,8 @@ func Command(c Config, args ...string) ([]byte, error) {
 		return []byte(""), err
 	}
 
+	if c.Socket != "" {
+		args = append([]string{"-L", c.Socket}, args...)
+	}
 	return exec.Command(tmuxPath, args...).Output()
 }
