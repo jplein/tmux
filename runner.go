@@ -40,12 +40,12 @@ import (
 // The Runner type also has many other functions for tasks like starting a new
 // tmux session, getting the active window, etc.
 type Runner struct {
+	Config      Config
 	writePipe   io.WriteCloser
 	readPipe    io.ReadCloser
 	readScanner bufio.Scanner
 	tmpSession  string
 	tmuxCommand *exec.Cmd
-	config      Config
 }
 
 func (r *Runner) readNextLine() (string, error) {
@@ -164,7 +164,7 @@ func (r *Runner) getSessionNamesByCommand() ([]string, error) {
 	var err error
 
 	var output []byte
-	if output, err = Command(r.config, "list-sessions", "-F", "#{session_name}"); err != nil {
+	if output, err = Command(r.Config, "list-sessions", "-F", "#{session_name}"); err != nil {
 		return nil, err
 	}
 
@@ -196,7 +196,7 @@ type Config struct {
 func (r *Runner) Init(c Config) error {
 	var err error
 
-	r.config = c
+	r.Config = c
 
 	var tmuxPath string
 	if tmuxPath, err = Tmux(); err != nil {
