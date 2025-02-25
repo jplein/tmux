@@ -9,3 +9,7 @@ func (r *Runner) SetPaneWidth(pane string, width int) error {
 	_, err := r.Run(cmd)
 	return err
 }
+
+func (r *Runner) GetActivePane() (string, error) {
+	return r.Run("list-panes -F '#{pane_id}' -f '#{m:#{pane_active},1}'")
+}
